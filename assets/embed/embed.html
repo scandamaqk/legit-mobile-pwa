@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Power BI Mobile Embed</title>
+  <script src="https://cdn.jsdelivr.net/npm/powerbi-client/dist/powerbi.js"></script>
+  <style>
+    html, body, #reportContainer {
+      margin:0; padding:0;
+      width:100%; height:100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="reportContainer"></div>
+  <script>
+    (async () => {
+      try {
+        // 1. Llama a tu endpoint para obtener el token
+        const resp = await fetch(
+          'https://dgtxlegit3w-gsdev.azurewebsites.net/api/report/mobile/db743b3a-3443-4fc1-a383-982c00ccb2ee/70c45611-ba8e-49da-bbe0-8ea498cca48e'
+        );
+        const { token } = await resp.json();
+
+        // 2. Configura el embed
+        const models = window['powerbi-client'].models;
+        const embedConfig = {
+          type: 'report',
+          tokenType: models.TokenType.Embed,
+          accessToken: token,
+          embedUrl:
+            'https://app.powerbi.com/reportEmbed?reportId=db743b3a-3443-4fc1-a383-982c00ccb2ee&groupId=15c3a852-b6a0-4176-820d-2394fe32448a',
+          settings: {
+            layoutType: models.LayoutType.MobilePortrait
+          }
+        };
+
+        // 3. Incrusta el reporte
+        window.powerbi.embed(
+          document.getElementById('reportContainer'),
+          embedConfig
+        );
+      } catch (e) {
+        document.body.innerHTML =
+          '<pre style="color:red;">Error cargando Power BI:\n' +
+          e.message +
+          '</pre>';
+      }
+    })();
+  </script>
+</body>
+</html>
